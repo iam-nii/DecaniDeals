@@ -1,17 +1,18 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import 'dotenv/config'
+import 'dotenv/config';
 import userRouter from './routes/user.route.js';
 import authRouter from './routes/auth.route.js';
 
+// Connecting to the mongo database
 mongoose.connect(process.env.MONGO_URL)
 .then(()=>console.log(("connected to mongodb!")))
 .catch((err)=>console.log(err));
 
 
-const app = express();
+const app = express(); // Creating the express server
 app.use(express.json());  // middleware for parsing json
-const PORT = 3000;
+const PORT = 3001;
 
 // Creating the routes
 app.use('/api/user',userRouter);
@@ -29,17 +30,6 @@ app.use((err,req,res,next)=>{
         message,        
     });
 });
-
-
-
-
-
-
-
-
-
-
-
 app.listen(PORT, ()=>{
     console.log(`Server is running on port ${PORT}`);
 });

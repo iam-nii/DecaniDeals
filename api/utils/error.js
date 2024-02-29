@@ -2,8 +2,8 @@
 // A function for handling errors
 export const errorHandler = (statusCode, message)=>{
     
-    const error:any = new Error(); // Typecasting  to any because we are adding properties to the error object
+    const error = new Error(); // Typecasting  to any because we are adding properties to the error object
     error.code = statusCode;
     error.message = message;
-    return error;
+    return error; 
 }

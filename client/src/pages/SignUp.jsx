@@ -15,13 +15,14 @@ export default function SignUp() {
       [e.target.id]:e.target.value,
     });
   };
+  console.log(formData);
   
   const handleSumbit = async(e) =>{
-    e.preventDefault(); // prevents the page from refreshin on submit
+    e.preventDefault(); // prevents the page from refreshing on submit
     
     try {
       setLoading(true);      
-      const res = await fetch('/api/auth/signup',{
+      const res = await fetch('/api/auth/signup',{ 
         method:'POST',
         headers:{
           'content-type': 'application/json',
@@ -30,6 +31,7 @@ export default function SignUp() {
       });
   
       const data = await res.json();
+      console.log(data);
   
       if(data.success == false){
         setLoading(false);
@@ -40,10 +42,11 @@ export default function SignUp() {
       setLoading(false);   
       setError(null);      
       navigate('/sign-in')
-        
+
     } catch (error) {
       setLoading(false);
       setError(error.message);
+      console.log(error.message);
     }
   }
   
