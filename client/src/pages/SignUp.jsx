@@ -54,7 +54,7 @@ export default function SignUp() {
     <div className='mx-auto p-3 max-w-lg'>
 
       <h1 className='text-center font-bold text-3xl my-7'>
-        SignUp
+        Sign Up
       </h1>
 
       <form onSubmit={handleSumbit} className='flex flex-col gap-4'>
