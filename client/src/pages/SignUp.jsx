@@ -1,12 +1,15 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import {useDispatch, useSelector} from 'react-redux'; // For dispatching the functions
+import {signInStart,signInSuccess,signInFailure,} from '../redux/user/userSlice'
+import OAuth from '../components/OAuth';
 
 export default function SignUp() {
 
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(null);
-  const [loading,setLoading] = useState(false); 
+  const {loading, error} = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // Handles input changes for form data
   const handleChange = (e) =>{
@@ -21,7 +24,7 @@ export default function SignUp() {
     e.preventDefault(); // prevents the page from refreshing on submit
     
     try {
-      setLoading(true);      
+      dispatch(signInStart());      
       const res = await fetch('/api/auth/signup',{ 
         method:'POST',
         headers:{
@@ -34,19 +37,15 @@ export default function SignUp() {
       console.log(data);
   
       if(data.success == false){
-        setLoading(false);
-        setError(data.message);
+        dispatch(signInFailure(data.message))
         return;
       } 
       // Set the loading to false  and redirect user to dashboard after successful sign up
-      setLoading(false);   
-      setError(null);      
+      dispatch(signInSuccess(data))       
       navigate('/sign-in')
 
     } catch (error) {
-      setLoading(false);
-      setError(error.message);
-      console.log(error.message);
+      dispatch(signInFailure(error.message))
     }
   }
   
@@ -66,6 +65,8 @@ export default function SignUp() {
         <input type="password" placeholder='Password' className='focus:outline-none rounded-lg p-3 border' id='password' onChange={handleChange}/>
 
         <button disabled={loading} className='bg-slate-700 text-white p-3 rounded uppercase hover:shadow-xl hover:opacity-95 disabled:opacity-80 disabled:shadow-none ' >{loading? 'Please wait...' : 'Sign Up'}</button>
+
+        <OAuth/>
 
       </form>
 
