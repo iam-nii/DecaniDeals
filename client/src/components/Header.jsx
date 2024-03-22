@@ -25,12 +25,17 @@ export default function Header() {
                     <li className='hidden sm:inline hover:underline'>Home</li>
                 </Link>
                 <Link to={'/about'}><li className='hidden sm:inline hover:underline'>About</li></Link>
-                <Link to={'/sign-in'}>
-                    {currentUser ? 
-                    (<img className='h-10 w-10 rounded-full object-cover' src={currentUser.avatar} alt='profile'/>)
+                {currentUser ? 
+                    (
+                        <Link to={'/profile'}>
+                        <img className='h-10 w-10 rounded-full object-cover' src={currentUser.avatar} alt='profile'/>
+                        </Link>
+                    )
                     :
-                    (<li className='hidden sm:inline hover:underline'>Sign in</li>)}
-                </Link>
+                    (<Link to={'/sign-in'}>
+                    <li className='hidden sm:inline hover:underline'>Sign in</li>
+                    </Link>)}
+                
             </ul>
         </div>
         
