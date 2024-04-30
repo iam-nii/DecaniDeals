@@ -3,6 +3,7 @@ import { useRef,useState,useEffect } from 'react';
 import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage';
 import {app} from '../firebase.js'
 import {useDispatch} from 'react-redux';
+import {Link} from 'react-router-dom';
 import { deleteUserFailure, deleteUserStart, deleteUserSuccess, signOutUserFailure, signOutUserStart, signOutUserSuccess, updateUserFailure, updateUserStart, updateUserSuccess } from '../redux/user/userSlice.js';
 
 
@@ -158,6 +159,11 @@ export default function Profile(){
             loading ? 'Loading...':'Update' 
           }
         </button>
+        <Link to={'/create-listing'} 
+        className='p-3 rounded-lg bg-green-600 text-center uppercase text-white hover:opacity-85'>
+          Create listing
+        </Link>
+
       </form>  
       <div className='flex mt-3 justify-between'>
         <span onClick={handleDeleteUser} className='text-red-700 cursor-pointer'>Delete account</span>
