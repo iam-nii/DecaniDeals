@@ -22,3 +22,18 @@ export const createListing = async(req,res,next)=>{
         next(error)
     }
 }
+
+export const showUserListing = async(req,res,next)=>{
+    if(req.user.id !== req.params.id)
+        return next(errorHandler(401, 'You can only view your own equipment listings'))
+
+    try{
+        console.log(req.body)
+        const filmListings = await  filmProductionListing.find({userRef:req.params.id});
+        const bagListings = await  bagProductionListing.find({userRef:req.params.id});
+        res.status(200).json({"Film":filmListings,"Bag":bagListings});
+    }catch(error){
+        next(error) 
+    }
+
+}
