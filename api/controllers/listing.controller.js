@@ -37,3 +37,36 @@ export const showUserListing = async(req,res,next)=>{
     }
 
 }
+
+export const deleteListing = async (req,res, next)=>{
+    var isbag = false;
+    var isfilm = false;
+
+    var listing = await filmProductionListing.findById(req.params.id);
+    if(!listing){
+        listing = await bagProductionListing.findById(req.params.id);
+        if(!listing){
+            return next(errorHandler(404, 'Equipment listing not found'));     
+        }else{
+            isbag = true;
+        }            
+    }else{
+        isfilm = true;
+    }
+    if(req.user.id !== listing.userRef){
+        return next(errorHandler(401, 'You can only delete your own equipment listings'))
+    }
+    try {
+        if(isbag){
+            await bagProductionListing.findByIdAndDelete(req.params.id);
+            res.status(200).json('Equipment listing deleted!');
+        }
+        if(isfilm){
+            await filmProductionListing.findByIdAndDelete(req.params.id);
+            res.status(200).json('Equipment listing deleted!');
+        }
+        
+    } catch (error) {
+        next(error);
+    }
+}
