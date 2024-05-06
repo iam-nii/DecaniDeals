@@ -2,6 +2,7 @@ import { bagProductionListing, filmProductionListing } from "../models/listing.m
 import { errorHandler } from "../utils/error.js";
 
 
+
 export const createListing = async(req,res,next)=>{
     try {
         console.log(req.body.type);
@@ -70,3 +71,99 @@ export const deleteListing = async (req,res, next)=>{
         next(error);
     }
 }
+
+// export const updateListing = async(req,res,next)=>{
+//     var isbag = false;
+//     var isfilm = false;
+
+//     var listing = await filmProductionListing.findById(req.params.id);
+//     if (!listing) {
+//         listing = await bagProductionListing.findById(req.params.id);
+//         if (!listing) {
+//             return next(errorHandler(404, 'Equipment listing not found!'));
+//         }else{
+//             isbag=true;
+//         }
+//     }else{
+//         isfilm=true;
+//     }
+//     if (req.user.id !== listing.userRef) {
+//         return next(errorHandler(401, 'You can only update your own equipment listings!'));
+//     }
+//     // }
+//     // if(!listing){
+//     //     listing = await bagProductionListing.findById(req.params.id);
+//     //     if(!listing){
+//     //         return next(errorHandler(404, 'Equipment listing not found'));     
+//     //     }else{
+//     //         isbag = true;
+//     //     }            
+//     // }else{
+//     //     isfilm = true;
+//     // }
+//     // if(req.user.id !== listing.userRef){
+//     //     return next(errorHandler(401, 'You can only update your own equipment listings'))
+//     // }
+
+//     try {
+//         if(isbag){
+//             const updatedListing = await bagProductionListing.findByIdAndUpdate(
+//                 req.params.id,
+//                 req.body,
+//                 {new:true}
+//             );
+//             res.status(200).json(updatedListing);
+//         }
+//         if(isfilm){
+//             const updatedListing = await filmProductionListing.findByIdAndUpdate(
+//                 req.params.id,
+//                 req.body,
+//                 {new:true}
+//             );
+//             res.status(200).json(updatedListing);
+//         }
+        
+//     } catch (error) {
+//         next(error);
+//     }
+// }
+
+export const updateListing = async (req, res, next) => {
+    var isbag = false;
+    var isfilm = false;
+    var listing = await filmProductionListing.findById(req.params.id);
+    if (!listing) {
+        listing = await bagProductionListing.findById(req.params.id);
+        if (!listing){
+            return next(errorHandler(404, 'Listing not found!'));
+        }else{
+            isbag=true;
+        }      
+    }else{
+        isfilm=true;
+    }
+    console.log(listing)
+    if (req.user.id !== listing.userRef) {
+      return next(errorHandler(401, 'You can only update your own listings!'));
+    }  
+    try {
+        if(isbag){
+            const updatedBagListing = await bagProductionListing.findByIdAndUpdate(
+                req.params.id,
+                req.body,
+                { new: true }
+              );
+              res.status(200).json(updatedBagListing);
+        }
+        if(isfilm){
+            const updatedFilmListing = await filmProductionListing.findByIdAndUpdate(
+                req.params.id,
+                req.body,
+                { new: true }
+              );
+              res.status(200).json(updatedFilmListing);
+        }      
+    } catch (error) {
+      next(error);
+    }
+  };
