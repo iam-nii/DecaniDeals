@@ -31,7 +31,7 @@ export default function Contact({ listing }) {
           </p>
           <textarea name="message" id="message" rows="2" value={message} onChange={onChangeMessage} placeholder="Enter your message here..." className="w-full rounded-lg border p-3"></textarea>
           <Link to={`mailto:${seller.email}?subject=Regarding ${listing.name}&body=${message}`} className="bg-slate-600 text-white text-center p-3 uppercase rounded-lg hover:opacity-95">
-          Отправить сообщение
+          Отправить сообщение 
           </Link>
         </div>
       )}
