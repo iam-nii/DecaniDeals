@@ -59,8 +59,7 @@ export default function CreateListing() {
                 setImageUploadError('Image upload failed (2mb max per iamge');
                 setLoading(false);
                 setError(true);
-            })
-            
+            })            
         }else if(files.length == 0){
             setImageUploadError('An image for the equipment must be selected')
             setLoading(false);
@@ -94,7 +93,6 @@ export default function CreateListing() {
                     })
                 }
             )
-
         })
     }
     const handleRemoveImage = (index) => {
