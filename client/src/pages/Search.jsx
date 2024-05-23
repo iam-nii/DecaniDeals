@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ListingItem from "../components/ListingItem";
 
 export default function Search() {
   const [sidebardata, setSidebardata] = useState({
@@ -9,75 +10,76 @@ export default function Search() {
     sort: "created_at",
     order: "desc",
   });
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
-  console.log(listings)
+  console.log(listings);
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
-    const searchTermFromUrl = urlParams.get('searchTerm');
-    const typeFromUrl = urlParams.get('type');
-    const productionRate = urlParams.get('productionRate');
+    const searchTermFromUrl = urlParams.get("searchTerm");
+    const typeFromUrl = urlParams.get("type");
+    const productionRate = urlParams.get("productionRate");
 
     console.log("Location search: ", location.search);
     console.log("URL Params: ", urlParams.toString());
 
     if (searchTermFromUrl || typeFromUrl || productionRate) {
-        setSidebardata({
-            searchTerm: searchTermFromUrl || '',
-            type: typeFromUrl || 'all',
-            productionRate: productionRate || 0,
-            sort: 'created_at',
-            order: 'desc',            
-        });
+      setSidebardata({
+        searchTerm: searchTermFromUrl || "",
+        type: typeFromUrl || "all",
+        productionRate: productionRate || 0,
+        sort: "created_at",
+        order: "desc",
+      });
     }
 
     const fetchListings = async () => {
-        setLoading(true);
-        const searchQuery = urlParams.toString();
-        console.log("Search Query: ", searchQuery);
-        const res = await fetch(`/api/listing/get?${searchQuery}`);
-        const data = await res.json();
-        console.log("Data received: ", data);
-        setListings(data);
-        setLoading(false);
+      setLoading(true);
+      const searchQuery = urlParams.toString();
+      console.log("Search Query: ", searchQuery);
+      const res = await fetch(`/api/listing/get?${searchQuery}`);
+      const data = await res.json();
+      console.log("Data received: ", data);
+      setListings(data);
+      setLoading(false);
     };
     fetchListings();
-}, [location.search]);
+  }, [location.search]);
 
-  
   const navigate = useNavigate();
   const handleChange = (e) => {
-    if(e.target.id === 'all' || e.target.id === 'bag' || e.target.id === 'film'){
-        setSidebardata({...sidebardata, type: e.target.id})
+    if (
+      e.target.id === "all" ||
+      e.target.id === "bag" ||
+      e.target.id === "film"
+    ) {
+      setSidebardata({ ...sidebardata, type: e.target.id });
     }
-    if(e.target.id === 'searchTerm'){
-        const search_term = e.target.value.replace("")
-        setSidebardata({...sidebardata, searchTerm: e.target.value})
+    if (e.target.id === "searchTerm") {
+      const search_term = e.target.value.replace("");
+      setSidebardata({ ...sidebardata, searchTerm: e.target.value });
     }
-    if (e.target.id === 'productionRate'){
-        setSidebardata({...sidebardata, productionRate: e.target.value})
+    if (e.target.id === "productionRate") {
+      setSidebardata({ ...sidebardata, productionRate: e.target.value });
     }
-    if(e.target.id === 'sort_order'){
-        const sort = e.target.value.split('_')[0] || 'created_at';
-        const order = e.target.value.split('_')[1] || 'desc';
-        setSidebardata({...sidebardata, sort, order})
-
+    if (e.target.id === "sort_order") {
+      const sort = e.target.value.split("_")[0] || "created_at";
+      const order = e.target.value.split("_")[1] || "desc";
+      setSidebardata({ ...sidebardata, sort, order });
     }
-
   };
-  const handleSubmit = (e) =>{
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     const urlParams = new URLSearchParams();
-    urlParams.set('searchTerm', sidebardata.searchTerm);
-    urlParams.set('type', sidebardata.type);
-    urlParams.set('productionRate', sidebardata.productionRate);
-    urlParams.set('sort', sidebardata.sort);
-    urlParams.set('order', sidebardata.order);
+    urlParams.set("searchTerm", sidebardata.searchTerm);
+    urlParams.set("type", sidebardata.type);
+    urlParams.set("productionRate", sidebardata.productionRate);
+    urlParams.set("sort", sidebardata.sort);
+    urlParams.set("order", sidebardata.order);
 
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
-  }
+  };
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -142,11 +144,16 @@ export default function Search() {
           <div className="flex items-center gap-2">
             <label className="font-semibold">Сортировка:</label>
             <label>
-              <select id="sort_order" className="border rounded-lg p-3" onChange={handleChange} defaultValue={'created_at_desc'}>
-                <option value='price_asc'>Дешевле</option>
-                <option value='price_desc'>Дороже</option>
-                <option value='createdAt_desc'>Новинки</option>
-                <option value='createdAt_asc'>Старинки</option>
+              <select
+                id="sort_order"
+                className="border rounded-lg p-3"
+                onChange={handleChange}
+                defaultValue={"created_at_desc"}
+              >
+                <option value="price_asc">Дешевле</option>
+                <option value="price_desc">Дороже</option>
+                <option value="createdAt_desc">Новинки</option>
+                <option value="createdAt_asc">Старинки</option>
               </select>
             </label>
           </div>
@@ -155,10 +162,24 @@ export default function Search() {
           </button>
         </form>
       </div>
-      <div className="">
+      <div className="flex-1">
         <h1 className="text-3xl font-semibold border-b p-3 text-slate-700 mt-5">
           Результаты поиска:{" "}
         </h1>
+        <div className="p-7 flex flex-wrap gap-3">
+          {!loading && listings.length === 0 && (
+            <p className="text-xl text-slate-700">
+              Нет результатов по вашему поиску :(
+            </p>
+          )}
+          {loading && (
+            <p className="text-xl text-slate-700 text-center w-full">
+              Загрузка...
+            </p>
+          )}
+
+          {!loading && listings && listings.map((listing) => <ListingItem key={listing._id} listing={listing}/>)}
+        </div>
       </div>
     </div>
   );
