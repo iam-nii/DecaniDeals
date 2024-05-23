@@ -188,66 +188,68 @@ export const getListing = async (req, res, next) => {
 };
 
 export const getListings = async (req, res, next) => {
-    try {
-      const limit = parseInt(req.query.limit, 10) || 9;
-      const startIndex = parseInt(req.query.startIndex, 10) || 0;
-      let type = req.query.type;
-      let productionRate = parseInt(req.query.productionRate, 10);
-  
-      // Handle invalid or undefined productionRate
-      if (isNaN(productionRate) || productionRate === undefined || productionRate === false) {
-        productionRate = 0;
-      }
-  
-      const searchTerm = req.query.searchTerm || " ";
-      const sort = req.query.sort || "createdAt";
-      const order = req.query.order || "desc";
-      let listings = [];
-  
-      if (type === "bag") {
-        listings = await bagProductionListing
-          .find({
-            name: { $regex: searchTerm, $options: 'i' },
-            productionRate: { $gt: productionRate } // Add the greater than condition
-          })
-          .sort({ [sort]: order === 'desc' ? -1 : 1 })
-          .limit(limit)
-          .skip(startIndex);
-      } else if (type === "film") {
-        listings = await filmProductionListing
-          .find({
-            name: { $regex: searchTerm, $options: 'i' },
-            productionRate: { $gt: productionRate } // Add the greater than condition
-          })
-          .sort({ [sort]: order === 'desc' ? -1 : 1 })
-          .limit(limit)
-          .skip(startIndex);
-      } else {
-        // Combined search for both "bag" and "film"
-        let baglistings = await bagProductionListing
-          .find({
-            name: { $regex: searchTerm, $options: 'i' },
-            productionRate: { $gt: productionRate } // Add the greater than condition
-          })
-          .sort({ [sort]: order === 'desc' ? -1 : 1 })
-          .limit(limit)
-          .skip(startIndex);
-  
-        let filmlistings = await filmProductionListing
-          .find({
-            name: { $regex: searchTerm, $options: 'i' },
-            productionRate: { $gt: productionRate } // Add the greater than condition
-          })
-          .sort({ [sort]: order === 'desc' ? -1 : 1 })
-          .limit(limit)
-          .skip(startIndex);
-  
-        listings = [...baglistings, ...filmlistings];
-      }
-  
-      return res.status(200).json(listings);
-    } catch (error) {
-      next(error);
+  try {
+    console.log("Query Parameters: ", req.query);
+
+    const limit = parseInt(req.query.limit, 10) || 9;
+    const startIndex = parseInt(req.query.startIndex, 10) || 0;
+    let type = req.query.type;
+    let productionRate = parseInt(req.query.productionRate, 10);
+
+    // Handle invalid or undefined productionRate
+    if (isNaN(productionRate) || productionRate === "undefined" || productionRate === false) {
+      productionRate = 0;
     }
-  };
+
+    const searchTerm = req.query.searchTerm || " ";
+    const sort = req.query.sort || "createdAt";
+    const order = req.query.order || "desc";
+    let listings = [];
+
+    if (type === "bag") {
+      listings = await bagProductionListing
+        .find({
+          name: { $regex: searchTerm, $options: 'i' },
+          productionRate: { $gt: productionRate } // Add the greater than condition
+        })
+        .sort({ [sort]: order === 'desc' ? -1 : 1 })
+        .limit(limit)
+        .skip(startIndex);
+    } else if (type === "film") {
+      listings = await filmProductionListing
+        .find({
+          name: { $regex: searchTerm, $options: 'i' },
+          productionRate: { $gt: productionRate } // Add the greater than condition
+        })
+        .sort({ [sort]: order === 'desc' ? -1 : 1 })
+        .limit(limit)
+        .skip(startIndex);
+    } else {
+      // Combined search for both "bag" and "film"
+      let baglistings = await bagProductionListing
+        .find({
+          name: { $regex: searchTerm, $options: 'i' },
+          productionRate: { $gt: productionRate } // Add the greater than condition
+        })
+        .sort({ [sort]: order === 'desc' ? -1 : 1 })
+        .limit(limit)
+        .skip(startIndex);
+
+      let filmlistings = await filmProductionListing
+        .find({
+          name: { $regex: searchTerm, $options: 'i' },
+          productionRate: { $gt: productionRate } // Add the greater than condition
+        })
+        .sort({ [sort]: order === 'desc' ? -1 : 1 })
+        .limit(limit)
+        .skip(startIndex);
+
+      listings = [...baglistings, ...filmlistings];
+    }
+
+    return res.status(200).json(listings);
+  } catch (error) {
+    next(error);
+  }
+};
   
