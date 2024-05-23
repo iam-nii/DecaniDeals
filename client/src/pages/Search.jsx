@@ -12,15 +12,14 @@ export default function Search() {
   });
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
+  const [showMore, setShowMore] = useState(false);
+
   console.log(listings);
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get("searchTerm");
     const typeFromUrl = urlParams.get("type");
     const productionRate = urlParams.get("productionRate");
-
-    console.log("Location search: ", location.search);
-    console.log("URL Params: ", urlParams.toString());
 
     if (searchTermFromUrl || typeFromUrl || productionRate) {
       setSidebardata({
@@ -34,11 +33,16 @@ export default function Search() {
 
     const fetchListings = async () => {
       setLoading(true);
+      setShowMore(false);
       const searchQuery = urlParams.toString();
       console.log("Search Query: ", searchQuery);
       const res = await fetch(`/api/listing/get?${searchQuery}`);
       const data = await res.json();
-      console.log("Data received: ", data);
+      if (data.length > 8){
+        setShowMore(true)
+      }else{
+        setShowMore(false);
+      }
       setListings(data);
       setLoading(false);
     };
@@ -80,6 +84,19 @@ export default function Search() {
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
   };
+
+  const onShowMoreClick = async () =>{
+    const numberOfListings = listings.length;
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set('startIndex',numberOfListings);
+    const searchQuery = urlParams.toString();
+    const res = await fetch(`/api/listing/get?${searchQuery}`);
+    const data = await res.json();
+    if(data.length <9){
+      setShowMore(false);
+    }
+    setListings([...listings, ...data])
+  }
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -178,7 +195,14 @@ export default function Search() {
             </p>
           )}
 
-          {!loading && listings && listings.map((listing) => <ListingItem key={listing._id} listing={listing}/>)}
+          {!loading &&
+            listings &&
+            listings.map((listing) => (
+              <ListingItem key={listing._id} listing={listing} />
+            ))}
+            {showMore && (
+              <button className="text-green-600 hover:underline p-7" onClick={onShowMoreClick}>Показать Ещё</button>
+            )}
         </div>
       </div>
     </div>
