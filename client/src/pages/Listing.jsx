@@ -32,6 +32,9 @@ export default function Listing() {
           setLoading(false);
           return;
         }
+        if(currentUser === null){
+          setContact(true);
+        }
         setListing(data);
         setLoading(false);
         setError(false);

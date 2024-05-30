@@ -1,4 +1,5 @@
 {
+  "homepage": "https://iam-nii.github.io/DecaniDeals",
   "name": "decanideals",
   "version": "1.0.0",
   "description": "",
@@ -6,7 +7,9 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon api/index.js",
-    "start": "npm api/index.js"
+    "start": "npm api/index.js",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +24,7 @@
     "nodemon": "^3.0.3"
   },
   "devDependencies": {
-    "@types/pg": "^8.11.0"
+    "@types/pg": "^8.11.0",
+    "gh-pages": "^6.1.1"
   }
 }
